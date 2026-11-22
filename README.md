@@ -1,5 +1,4 @@
-# CampusConnect
-A web-based campus complaint system where students report facility issues, admins assign them to maintenance staff, and staff track the work to resolution, built with Java, MySQL, and JavaScript.
+
 # CampusConnect
 
 A web-based Campus Complaint and Facility Management System. Students report campus facility problems, administrators assign them to maintenance staff, and staff accept, progress, and resolve the work. Every change is recorded in a status history, and users receive notifications.
