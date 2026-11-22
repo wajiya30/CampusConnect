@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusConnect — Campus Complaint & Facility Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Connection banner, shown when the server stops responding -->
+  <div class="conn-banner hidden" id="connBanner" role="status" aria-live="polite">
+    <span id="connMessage"></span>
+    <button type="button" class="link-btn" id="retryNowBtn">Retry now</button>
+  </div>
+
+  <!-- STAGE 1: SPLASH / LOGO SCREEN -->
+  <section class="splash-screen" id="splashScreen">
+    <div class="splash-orb orb-1"></div>
+    <div class="splash-orb orb-2"></div>
+
+    <div class="splash-card">
+      <div class="splash-logo">
+        <svg width="74" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="74" height="74" rx="22" fill="url(#emeraldGrad)" />
+          <path d="M18 32L37 20L56 32L37 44L18 32Z" stroke="#FFFDF9" stroke-width="3.2" stroke-linejoin="round" />
+          <path d="M25 36.5V47.5C25 50.6 30.3 53.5 37 53.5C43.7 53.5 49 50.6 49 47.5V36.5" stroke="#D1FAE5" stroke-width="3.2" stroke-linecap="round" />
+          <circle cx="55" cy="19" r="6.5" fill="#E06D53" />
+          <defs>
+            <linearGradient id="emeraldGrad" x1="0" y1="0" x2="74" y2="74" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#0F3D3E" />
+              <stop offset="1" stop-color="#1E6B68" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <span class="splash-pill">University Facility & Maintenance Portal</span>
+      <h1 class="splash-title">CampusConnect</h1>
+      <p class="splash-subtitle">
+        Report campus issues in seconds, assign maintenance teams effortlessly, and track every repair from start to finish.
+      </p>
+
+      <div class="splash-features">
+        <span>Easy Reporting</span>
+        <span>•</span>
+        <span>Live Status Tracking</span>
+        <span>•</span>
+        <span>Instant Alerts</span>
+      </div>
+
+      <button class="btn btn-accent btn-lg" id="continueToLoginBtn">
+        Get Started &amp; Sign In &rarr;
+      </button>
+    </div>
+  </section>
+
+  <!-- STAGE 2: LOGIN SCREEN -->
+  <section class="login-screen hidden" id="loginScreen">
+    <div class="login-card">
+      <div class="login-brand">
+        <svg width="46" height="46" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="74" height="74" rx="20" fill="url(#loginEmerald)" />
+          <path d="M18 32L37 20L56 32L37 44L18 32Z" stroke="#FFFDF9" stroke-width="3.5" stroke-linejoin="round" />
+          <path d="M25 36.5V47.5C25 50.6 30.3 53.5 37 53.5C43.7 53.5 49 50.6 49 47.5V36.5" stroke="#D1FAE5" stroke-width="3.5" stroke-linecap="round" />
+          <circle cx="55" cy="19" r="6.5" fill="#E06D53" />
+          <defs>
+            <linearGradient id="loginEmerald" x1="0" y1="0" x2="74" y2="74" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#0F3D3E" />
+              <stop offset="1" stop-color="#1E6B68" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div>
+          <h2>Sign in to CampusConnect</h2>
+          <p>Pick a role to fill in a demo account, or enter your own ID</p>
+        </div>
+      </div>
+
+      <!-- Demo role cards only fill in the form. The backend decides the real role. -->
+      <div class="role-cards" id="roleCards">
+        <button type="button" class="role-pill-card active" data-role="student">
+          <strong>Student</strong>
+          <span>Submit &amp; track</span>
+        </button>
+        <button type="button" class="role-pill-card" data-role="admin">
+          <strong>Admin</strong>
+          <span>Assign &amp; manage</span>
+        </button>
+        <button type="button" class="role-pill-card" data-role="staff">
+          <strong>Staff</strong>
+          <span>Fix &amp; resolve</span>
+        </button>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="loginId">User ID</label>
+             <input type="text" id="loginId" maxlength="20" placeholder="e.g., STU-1" autocomplete="username" required /> 
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Your password" autocomplete="current-password" required />
+        </div>
+
+        <p class="login-error hidden" id="loginError" role="alert"></p>
+
+        <button type="submit" class="btn btn-primary btn-full">Enter Portal &rarr;</button>
+      </form>
+
+      <div class="login-footer-row">
+        <button type="button" class="link-btn" id="backToLogoBtn">&larr; Back to Welcome Screen</button>
+        <span class="login-hint">Demo password: campus123</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 3: DASHBOARD -->
+  <div class="app-shell hidden" id="dashboardShell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="logo-mark" aria-hidden="true">
+          <svg width="38" height="38" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="74" height="74" rx="20" fill="url(#sideGrad)" />
+            <path d="M18 32L37 20L56 32L37 44L18 32Z" stroke="#FFFDF9" stroke-width="3.6" stroke-linejoin="round" />
+            <path d="M25 36.5V47.5C25 50.6 30.3 53.5 37 53.5C43.7 53.5 49 50.6 49 47.5V36.5" stroke="#D1FAE5" stroke-width="3.6" stroke-linecap="round" />
+            <circle cx="55" cy="19" r="6.5" fill="#E06D53" />
+            <defs>
+              <linearGradient id="sideGrad" x1="0" y1="0" x2="74" y2="74" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#0F3D3E" />
+                <stop offset="1" stop-color="#1E6B68" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">CampusConnect</span>
+          <span class="brand-sub">Facility &amp; Care Hub</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-view="dashboard">
+          <span class="nav-dot"></span> Dashboard Home
+        </button>
+        <button class="nav-item" data-view="complaints">
+          <span class="nav-dot"></span> All Complaints
+        </button>
+        <button class="nav-item" data-view="submit" id="navSubmitBtn">
+          <span class="nav-dot"></span> Submit Complaint
+        </button>
+        <button class="nav-item" data-view="history">
+          <span class="nav-dot"></span> Activity &amp; History
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="avatar" id="userAvatar">--</div>
+          <div style="flex:1; min-width:0;">
+            <div class="user-name" id="userName">Loading...</div>
+            <div class="user-meta" id="userMeta"></div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm logout-btn" id="logoutBtn">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <span class="welcome-chip" id="welcomeRoleBanner">Workspace</span>
+          <h1 id="pageTitle">Dashboard Overview</h1>
+          <p class="subtitle" id="pageSubtitle">Track campus maintenance requests, assignments, and live updates.</p>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="notification-wrapper">
+            <button class="icon-btn" id="notifToggleBtn" aria-label="Notifications">
+              <span>Notifications</span>
+              <span class="badge-count" id="notifCount">0</span>
+            </button>
+            <div class="notif-dropdown hidden" id="notifDropdown">
+              <div class="notif-header">
+                <strong>Recent Alerts</strong>
+                <button class="link-btn" id="markAllReadBtn">Mark all read</button>
+              </div>
+              <ul class="notif-list" id="notifList"></ul>
+            </div>
+          </div>
+          <button class="btn btn-accent" id="quickNewBtn">+ Report Issue</button>
+        </div>
+      </header>
+
+      <!-- KPI cards -->
+      <section class="stats-grid" id="statsGrid">
+        <div class="stat-card accent-border-teal">
+          <span class="stat-label">Total Complaints</span>
+          <strong class="stat-value" id="statTotal">0</strong>
+          <span class="stat-hint">All reported issues</span>
+        </div>
+        <div class="stat-card accent-border-amber">
+          <span class="stat-label">Pending / Assigned</span>
+          <strong class="stat-value text-amber" id="statPending">0</strong>
+          <span class="stat-hint">Waiting or queued</span>
+        </div>
+        <div class="stat-card accent-border-coral">
+          <span class="stat-label">In Progress</span>
+          <strong class="stat-value text-coral" id="statProgress">0</strong>
+          <span class="stat-hint">Currently being fixed</span>
+        </div>
+        <div class="stat-card accent-border-emerald">
+          <span class="stat-label">Resolved</span>
+          <strong class="stat-value text-emerald" id="statResolved">0</strong>
+          <span class="stat-hint">Completed &amp; closed</span>
+        </div>
+      </section>
+
+      <!-- View 1: Complaints table -->
+      <section class="panel" id="view-dashboard">
+        <div class="panel-header">
+          <div>
+            <h2>Campus Complaints Directory</h2>
+            <p>Search by keyword, filter by category or status, or click a row to view details.</p>
+          </div>
+          <div class="filters">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search ID, title, or room..." />
+            <select id="filterCategory">
+              <option value="ALL">All Categories</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Classroom">Classroom</option>
+              <option value="Laboratory">Laboratory</option>
+              <option value="Cleanliness">Cleanliness</option>
+              <option value="General">General</option>
+            </select>
+            <select id="filterStatus">
+              <option value="ALL">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Issue &amp; Location</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned Staff</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="complaintsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- View 2: Submit complaint form -->
+      <section class="panel hidden" id="view-submit">
+        <div class="panel-header">
+          <div>
+            <h2>Report a Campus Issue</h2>
+            <p>Fill out the form below. Your complaint gets a unique tracking ID right away.</p>
+          </div>
+        </div>
+
+        <form id="complaintForm" class="form-grid">
+          <div class="form-group">
+            <label for="cTitle">What is the problem? *</label>
+            <input type="text" id="cTitle" maxlength="200" placeholder="e.g., Projector not turning on in Lab 3" required />
+          </div>
+
+          <div class="form-group">
+            <label for="cCategory">Category *</label>
+            <select id="cCategory" required>
+              <option value="">Choose category...</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Classroom">Classroom</option>
+              <option value="Laboratory">Laboratory</option>
+              <option value="Cleanliness">Cleanliness</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="cLocation">Exact Location (Block / Room / Lab) *</label>
+            <input type="text" id="cLocation" maxlength="150" placeholder="e.g., CS Block — Room 204" required />
+          </div>
+
+          <div class="form-group">
+            <label for="cPriority">Urgency Level</label>
+            <select id="cPriority">
+              <option value="Low">Low — Minor inconvenience</option>
+              <option value="Medium" selected>Medium — Needs attention soon</option>
+              <option value="High">High — Urgent / Safety issue</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="cDescription">Additional Details *</label>
+            <textarea id="cDescription" rows="4" maxlength="2000" placeholder="Briefly describe what happened so maintenance brings the right tools..." required></textarea>
+          </div>
+
+          <div class="form-actions full-width">
+            <button type="button" class="btn btn-secondary" id="cancelFormBtn">Cancel</button>
+            <button type="submit" class="btn btn-accent">Submit Complaint</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- View 3: Activity log -->
+      <section class="panel hidden" id="view-history">
+        <div class="panel-header">
+          <div>
+            <h2>Live Status History</h2>
+            <p>Every submission, assignment, priority change, and status update for the complaints you can see.</p>
+          </div>
+        </div>
+        <ul class="timeline" id="historyTimeline"></ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Detail / manage modal -->
+  <div class="modal-backdrop hidden" id="detailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="mono-id" id="modalComplaintId">CMP-0000</span>
+          <h3 id="modalComplaintTitle">Complaint Title</h3>
+        </div>
+        <button class="close-btn" id="closeModalBtn" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Toast feedback -->
+  <div class="toast hidden" id="toastMsg"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
