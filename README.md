@@ -3,12 +3,6 @@
 
 A web-based Campus Complaint and Facility Management System. Students report campus facility problems, administrators assign them to maintenance staff, and staff accept, progress, and resolve the work. Every change is recorded in a status history, and users receive notifications.
 
-## Team
-
-- Tayyaba Iqbal (59806)
-- Wajeeha Aqdas (58908)
-- Nayyab Razzaq (61472)
-
 Course: Software Construction and Development (SCD), 6th Semester
 
 ## Features
